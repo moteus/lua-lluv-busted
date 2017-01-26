@@ -19,8 +19,10 @@ before_install:
   - pip install --user hererocks
   - hererocks here -r^ --$LUA
   - source here/bin/activate
+  - bash .travis/setup_uv.sh
 
 install:
+  - luarocks install lluv UV_DIR=$TRAVIS_BUILD_DIR/libuv
   - luarocks make rockspecs/lluv-busted-scm-0.rockspec
 
 script:
