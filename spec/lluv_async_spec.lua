@@ -1,6 +1,10 @@
 local uv = require "lluv"
 
-setloop(require "lluv.busted.loop")
+local loop = require "lluv.busted.loop"
+
+loop.set_timeout(10)
+
+setloop(loop)
 
 describe("basic test", function()
   it('should pass', function(done) async()
@@ -18,22 +22,14 @@ describe("basic test", function()
     uv.signal():start(uv.SIGINT, function() end):unref()
   end)
 
-  -- it('timeout', function(done) async() end)
-
-  after_each(function(done) async()
-    uv.handles(function(handle)
-      if not(handle:closed() or handle:closing()) then
-        if handle:active() then
-          if not handle:has_ref() then
-            -- we has no reference so assume we just can close it
-            -- and it is not error in test
-            return handle:close()
-          end
-          assert.truthy(false, 'Test leave active handle:' .. tostring(handle))
-        end
-      end
+  it('should pass timeout', function(done) async()
+    uv.timer():start(5000, function()
+      assert.is_true(true)
+      done()
     end)
+  end)
 
-    done()
+  after_each(function()
+    loop.verify_after()
   end)
 end)

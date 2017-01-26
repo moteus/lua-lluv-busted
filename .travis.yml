@@ -24,6 +24,7 @@ before_install:
 install:
   - luarocks install lluv UV_DIR=$TRAVIS_BUILD_DIR/libuv
   - luarocks install lua_cliargs 2.5
+  - luarocks install penlight --server=https://luarocks.org/dev
   - luarocks make rockspecs/lluv-busted-scm-0.rockspec
 
 script:

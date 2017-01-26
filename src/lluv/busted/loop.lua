@@ -39,13 +39,33 @@ loop.create_timer = function(secs, on_timeout)
   }
 end
 
--- extension to overwrite 
+-- !extension to overwrite busted hardcoded value (1s)
 loop.set_timeout = function(secs)
   timeout = secs
 
   if active_timer then
     active_timer:again(timeout or default_timeout or 1)
   end
+end
+
+-- !extension to check either after test end there exists handles
+--  which may prevent to stop libuv loop
+-- @usage 
+--   after_each(function(done) async()
+--     loop.verify_after()
+--     done()
+--   end)
+loop.verify_after = function ()
+  uv.handles(function(handle)
+    if not(handle:closed() or handle:closing()) then
+      if handle:active() and handle:has_ref() then
+        assert.truthy(false, 'Test left active handle: ' .. tostring(handle))
+      end
+      -- we has no reference so assume we just can close it
+      -- and it is not error in test
+      return handle:close()
+    end
+  end)
 end
 
 loop.step = function()
