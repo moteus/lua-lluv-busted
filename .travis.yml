@@ -1,0 +1,32 @@
+language: c
+
+sudo: false
+
+matrix:
+  include:
+    - env: LUA="lua 5.1"
+    # - env: LUA="lua 5.1"
+    # - env: LUA="lua 5.2"
+    # - env: LUA="lua 5.3"
+    # - env: LUA="luajit 2.0"
+    # - env: LUA="luajit 2.1"
+
+branches:
+  only:
+    - master
+
+before_install:
+  - pip install --user hererocks
+  - hererocks here -r^ --$LUA
+  - source here/bin/activate
+
+install:
+  - luarocks make rockspecs/lluv-busted-scm-0.rockspec
+
+script:
+  - busted
+
+notifications:
+  email:
+    on_success: change
+    on_failure: always
