@@ -23,10 +23,11 @@ before_install:
 
 install:
   - luarocks install lluv UV_DIR=$TRAVIS_BUILD_DIR/libuv
+  - luarocks install lua_cliargs 2.5
   - luarocks make rockspecs/lluv-busted-scm-0.rockspec
 
 script:
-  - busted
+  - busted_bootstrap
 
 notifications:
   email:

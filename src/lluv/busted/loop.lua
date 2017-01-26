@@ -40,7 +40,7 @@ loop.create_timer = function(secs, on_timeout)
 end
 
 -- extension to overwrite 
-loop.set_timout = function(secs)
+loop.set_timeout = function(secs)
   timeout = secs
 
   if active_timer then
