@@ -2,7 +2,7 @@ local uv = require'lluv'
 
 local loop = {}
 
-local timeout, default_timeout, active_timer
+local timeout, default_timeout, active_timer, debug_traceback
 
 local function close_all_handles()
   uv.handles(function(handle)
@@ -68,8 +68,12 @@ loop.verify_after = function ()
   end)
 end
 
+loop.set_traceback = function(traceback)
+  debug_traceback = traceback
+end
+
 loop.step = function()
-  uv.run()
+  uv.run(debug_traceback)
 end
 
 loop.pcall = pcall
