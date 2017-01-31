@@ -41,11 +41,15 @@ end
 
 -- !extension to overwrite busted hardcoded value (1s)
 loop.set_timeout = function(secs)
-  timeout = secs
+  local old = timeout
 
-  if active_timer then
-    active_timer:again(timeout or default_timeout or 1)
+  timeout = secs or default_timeout or 1
+
+  if active_timer and active_timer:active() then
+    active_timer:again(timeout * 1000)
   end
+
+  return old
 end
 
 -- !extension to check either after test end there exists handles
